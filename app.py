@@ -4,9 +4,9 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-st.title('NoramlizeMe HGS-OvCa in HM450k')
 
-streamlit app.py
+streamlit run app.py
+st.title('NoramlizeMe HGS-OvCa in HM450k')
 
 df = pd.read_csv('gdac.broadinstitute.org_OV.Merge_methylation__humanmethylation450__jhu_usc_edu__Level_3__within_bioassay_data_set_function__data.Level_3.2016012800.0.0.tar.gz', sep = '\t', compression='gzip', low_memory=False)
 df
