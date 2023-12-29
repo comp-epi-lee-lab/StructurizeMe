@@ -6,8 +6,12 @@ import io
 
 st.title('NoramlizeMe HGS-OvCa in HM450k')
 
-df = st.file_uploader("HM450k_EpicGeneSum.tsv.gz")
+cols = 'BLANK'
+df = ('HM450k_EpicGeneSum.tsv.gz')
 
-if df is not None:
-    dataframe = pd.read_csv(io.BytesIO(df.read()))
-    st.write(dataframe)
+def load_data(nrows):
+    data = pd.read_csv(df, nrows=nrows)
+    lowercase = lambda x: str(x).lower()
+    data.rename(lowercase, axis='columns', inplace=True)
+    data[cols] = pd.to_datetime(data[cols])
+    return data
