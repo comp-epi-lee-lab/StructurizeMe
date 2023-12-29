@@ -9,4 +9,4 @@ df = st.file_uploader("HM450k_EpicGeneSum.tsv.gz")
 
 if df is not None:
     dataframe = pd.read_csv(df)
-	st.write(dataframe)
+    st.write(dataframe)
