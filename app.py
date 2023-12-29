@@ -7,9 +7,8 @@ import io
 st.title('NoramlizeMe HGS-OvCa in HM450k')
 
 cols = 'GenecodeV41_Group'
-df = ('HM450k_EpicGeneSum.tsv.gz')
+df = ('/NormalizeMe/HM450k_EpicGeneSum.tsv.gz')
 
-@st.cache_data
 def load_data(nrows):
     data = pd.read_csv(df, nrows=nrows, sep='\t', compression='gzip')
     lowercase = lambda x: str(x).lower()
