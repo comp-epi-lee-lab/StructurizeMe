@@ -6,12 +6,17 @@ import io
 
 st.title('NoramlizeMe HGS-OvCa in HM450k')
 
-cols = 'BLANK'
+cols = 'GenecodeV41_Group'
 df = ('HM450k_EpicGeneSum.tsv.gz')
 
 def load_data(nrows):
-    data = pd.read_csv(df, nrows=nrows)
+    data = pd.read_csv(df, nrows=nrows, sep='\t', compression='gzip')
     lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[cols] = pd.to_datetime(data[cols])
+    data.rename(axis='columns', inplace=True)
     return data
+
+data_load_state = st.text('Loading data...')
+data = load_data(22847)
+data_load_state.text('Data loaded successfully!')
+
+st.write(data)
