@@ -2,6 +2,7 @@ name: base
 channels:
   - defaults
 dependencies:
+  - seaborn
   - scipy
   - matplotlib
   - plotly
