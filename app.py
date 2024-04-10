@@ -90,18 +90,6 @@ if selected_gene_names:
     else:
         st.write("No data available for selected genes in EPIC850k.")
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.write("Selected Genes in HM450k:")
-        st.pyplot(fig1)
-        st.write(selected_data_hm450k.set_index(indexes))
-
-    with col2:
-        st.write("Selected Genes in EPIC850k:")
-        st.pyplot(fig2)
-        st.write(selected_data_epic850k.set_index(indexes))
-
     fig4, ax4 = plt.subplots(figsize=(20, 10))
 
     if not selected_data_diff.empty:
