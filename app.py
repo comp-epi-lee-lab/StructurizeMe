@@ -49,8 +49,9 @@ if selected_gene_names:
     if not selected_data_hm450k.empty:
         
         work_hm450k = selected_data_hm450k.set_index(indexes)
+        work_hm450k_drop = work_hm450k.dropna(axis=1, how='all')
         plt.title("HM450K", fontfamily='sans-serif')
-        ax1 = sns.heatmap(work_hm450k, cmap="vlag", annot=False, linewidths=.5,
+        ax1 = sns.heatmap(work_hm450k_drop, cmap="vlag", annot=False, linewidths=.5,
                           yticklabels=True, linecolor='grey', annot_kws={"size": 12},
                           cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.tick_params(left=False, bottom=False)
@@ -64,15 +65,18 @@ if selected_gene_names:
         ax1.spines['right'].set_color(spine_color)
         ax1.patch.set_edgecolor('lightgrey')
         ax1.patch.set_hatch('///')
-    else:
-        st.write("No data available for selected genes in HM450k.")
+        
+        st.write("Selected Genes in HM450k:")
+        st.pyplot(fig1)
+        st.write(selected_data_hm450k.set_index(indexes)[work_hm450k_drop.columns])
 
     fig2, ax2 = plt.subplots(figsize=(15, 5))
 
     if not selected_data_epic850k.empty:
         
         work_epic850k = selected_data_epic850k.set_index(indexes)
-        ax2 = sns.heatmap(work_epic850k, cmap="vlag", annot=False, linewidths=.5,
+        work_epic850k_drop = work_epic850k.dropna(axis=1, how='all')
+        ax2 = sns.heatmap(work_epic850k_drop, cmap="vlag", annot=False, linewidths=.5,
                           yticklabels=True, linecolor='grey', annot_kws={"size": 12},
                           cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title("EPIC850K", fontfamily='sans-serif')
@@ -87,8 +91,10 @@ if selected_gene_names:
         ax2.spines['right'].set_color(spine_color)
         ax2.patch.set_edgecolor('lightgrey')
         ax2.patch.set_hatch('///')
-    else:
-        st.write("No data available for selected genes in EPIC850k.")
+        
+        st.write("Selected Genes in EPIC850k:")
+        st.pyplot(fig2)
+        st.write(selected_data_epic850k.set_index(indexes)[work_epic850k_drop.columns])
 
     fig4, ax4 = plt.subplots(figsize=(20, 10))
 
