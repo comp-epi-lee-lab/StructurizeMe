@@ -8,7 +8,7 @@ st.title('StructurizeMe HGS-OvCa in HM450k and EPICv1')
 
 input = st.text_input("Enter gene names separated by commas..", "")
 selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
-st.button("VisualizeMe", type="primary")
+st.button("StructurizeMe", type="primary")
 
 
 def load_data_hm450k(nrows):
@@ -51,10 +51,10 @@ if selected_gene_names:
         work_epic850k = selected_data_epic850k.set_index(indexes)
         work_epic850k_drop = work_epic850k.dropna(axis=1, how='all')
         ax2 = sns.heatmap(work_epic850k_drop, cmap="vlag", annot=False, linewidths=.5,
-                          yticklabels=True, linecolor='grey', annot_kws={"size": 12},
-                          cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
+                          yticklabels=work_epic850k_drop.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title("EPIC850K - Ovarian Normal", fontfamily='sans-serif')
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
+        plt.ylabel("Gene Name", fontfamily='sans-serif')
         plt.tick_params(left=False, bottom=False)
         ax2.spines['bottom'].set_visible(True)
         ax2.spines['right'].set_visible(True)
@@ -65,7 +65,6 @@ if selected_gene_names:
         ax2.spines['right'].set_color(spine_color)
         ax2.patch.set_edgecolor('lightgrey')
         ax2.patch.set_hatch('///')
-        
         st.write("Selected Genes in EPIC850k:")
         st.pyplot(fig2)
         st.write(selected_data_epic850k.set_index(indexes)[work_epic850k_drop.columns])
@@ -78,10 +77,10 @@ if selected_gene_names:
         work_hm450k_drop = work_hm450k.dropna(axis=1, how='all')
         plt.title("HM450K - Ovarian Cancer", fontfamily='sans-serif')
         ax1 = sns.heatmap(work_hm450k_drop, cmap="vlag", annot=False, linewidths=.5,
-                          yticklabels=True, linecolor='grey', annot_kws={"size": 12},
-                          cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
+                          yticklabels=work_hm450k_drop.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.tick_params(left=False, bottom=False)
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
+        plt.ylabel("Gene Name", fontfamily='sans-serif')
         ax1.spines['bottom'].set_visible(True)
         ax1.spines['right'].set_visible(True)
         ax1.spines['bottom'].set_linewidth(.5)
@@ -104,8 +103,7 @@ if selected_gene_names:
         work_diff_drop = work_diff.dropna(axis=1, how='all')
         plt.title("Difference", fontfamily='sans-serif')
         ax3 = sns.heatmap(work_diff_drop, cmap="RdYlBu_r", annot=True, linewidths=.5,
-                      yticklabels=True, linecolor='grey', annot_kws={"size": 12},
-                      cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
+                      yticklabels=work_diff_drop.index.get_level_values('Gene'), linecolor='grey',    annot_kws={"size": 12}, cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
         plt.tick_params(left=False, bottom=False)
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         ax3.spines['bottom'].set_visible(True)
@@ -128,8 +126,7 @@ if selected_gene_names:
         work_diff = selected_data_diff.set_index(indexes)
         plt.title("Difference", fontfamily='sans-serif')
         ax3 = sns.heatmap(work_diff, cmap="RdYlBu_r", annot=False, linewidths=.5,
-                      yticklabels=True, linecolor='grey', annot_kws={"size": 12},
-                      cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
+                      yticklabels=work_diff.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
         plt.tick_params(left=False, bottom=False)
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         ax3.spines['bottom'].set_visible(True)
@@ -141,9 +138,9 @@ if selected_gene_names:
         ax3.spines['right'].set_color(spine_color)
         ax3.patch.set_edgecolor('lightgrey')
         ax3.patch.set_hatch('///')
-
-        st.pyplot(fig3)
+       
         st.write(selected_data_diff.set_index(indexes)[work_diff_drop.columns])
+        st.pyplot(fig3)
 
 else:
     st.write("Please enter gene names.")
