@@ -10,40 +10,55 @@ option = st.multiselect(
     'Select a cancer type:',  
     ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD'))
 
-input = st.text_input("Enter gene names separated by commas..", "")
-selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
-st.button("StructurizeMe", type="primary")
-    
-def load_data_hm450k(nrows):
-    data = pd.read_csv('data/HM450k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return data
+if option in ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD'):
+    input = st.text_input("Enter gene names separated by commas:", "")
+    selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
+    if st.button("StructurizeMe", type="primary"):
+        st.write("You selected:", option)
+        st.write("Gene names:", selected_gene_names)
+###########################################################################loading data
+def load_data_OVhm450k(nrows):
+    OVdata = pd.read_csv('data/OV Files/HM450k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
+    return OVdata
 
-data = load_data_hm450k(22847)
+data = load_data_OVhm450k(22847)
 
-def load_data_epic850k(nrows):
-    df = pd.read_csv('data/EPIC850k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return df
+def load_data_OVepic850k(nrows):
+    OVdf = pd.read_csv('data/OV Files/EPIC850k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
+    return OVdf
 
-df = load_data_epic850k(23747)
+df = load_data_OVepic850k(23747)
 
-def load_data_diff(nrows):
-    diff = pd.read_csv('data/Differences_HM450EPICv1.gz', nrows=nrows, sep='\t', compression='gzip')
-    return df
+def load_data_OVdiff(nrows):
+    OVdiff = pd.read_csv('data/OV Files/Differences_HM450EPICv1.gz', nrows=nrows, sep='\t', compression='gzip')
+    return OVdiff
 
-diff = load_data_diff(24875)
+OVdiff = load_data_OVdiff(24875)
 
+def load_data_BRCAcan (nrows):
+    brca_cancer = pd.read_csv('data/BRCA Files/BRCA-Cancer.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
+    return brca_cancer
+
+brca_cancer = load_data_BRCAcan(23034)
+
+def load_data_BRCAcnorm (nrows):
+    brca_normal = pd.read_csv('data/BRCA Files/BRCA-Normal.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
+    return brca_normal
+
+brca_normal = load_data_BRCAcnorm(23034)
+###########################################################################choosing gene names and visualization
 indexes = ['Gene','alias_symbol']
-df_cols = df.columns 
-data_cols = data.columns
-diff_cols = diff.columns
+df_cols = OVdf.columns 
+data_cols = OVdata.columns
+diff_cols = OVdiff.columns
 
-gene_names = pd.concat([data['Gene'], df['Gene']], ignore_index=True)
+gene_names = pd.concat([OVdata['Gene'], OVdf['Gene']], ignore_index=True)
 
 if selected_gene_names:
-    selected_data_hm450k = data[data['Gene'].isin(selected_gene_names) | data['alias_symbol'].isin(selected_gene_names)]
-    selected_data_epic850k = df[df['Gene'].isin(selected_gene_names) | df['alias_symbol'].isin(selected_gene_names)]
+    selected_data_hm450k = OVdata[OVdata['Gene'].isin(selected_gene_names) | OVdata['alias_symbol'].isin(selected_gene_names)]
+    selected_data_epic850k = OVdf[OVdf['Gene'].isin(selected_gene_names) | OVdf['alias_symbol'].isin(selected_gene_names)]
     
-    selected_data_diff = diff[diff['Gene'].isin(selected_gene_names) | diff['alias_symbol'].isin(selected_gene_names)]
+    selected_data_diff = OVdiff[OVdiff['Gene'].isin(selected_gene_names) | OVdiff['alias_symbol'].isin(selected_gene_names)]
 
     st.write(f'Data for Selected Gene Names: {", ".join(selected_gene_names)}')
 
