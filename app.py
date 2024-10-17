@@ -4,73 +4,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title('StructurizeMe: Cancer and Normal Samples in HM450k and EPICv1')
+# Function to load data for each cancer type
+def load_data():
+    return {
+        'BRCA': {
+            'cancer': pd.read_csv('data/BRCA-Cancer.tsv.gz', sep='\t', compression='gzip'),
+            'normal': pd.read_csv('data/BRCA-Normal.tsv.gz', sep='\t', compression='gzip'),
+            'diff': pd.read_csv('data/BRCA-Differences.tsv.gz', sep='\t', compression='gzip')
+        },
+        'COAD': {
+            'cancer': pd.read_csv('data/COAD-Cancer.tsv.gz', sep='\t', compression='gzip'),
+            'normal': pd.read_csv('data/COAD-Normal.tsv.gz', sep='\t', compression='gzip'),
+            'diff': pd.read_csv('data/COAD-Differences.tsv.gz', sep='\t', compression='gzip')
+        },
+        'OV': {
+            'cancer': pd.read_csv('data/HM450k_EpicGeneSum1.tsv.gz', sep='\t', compression='gzip'),
+            'normal': pd.read_csv('data/EPIC850k_EpicGeneSum1.tsv.gz', sep='\t', compression='gzip'),
+            'diff': pd.read_csv('data/Differences_HM450EPICv1.gz', sep='\t', compression='gzip')
+        }
+    }
 
-option = st.multiselect(
-    'Select a cancer type:',  
-    ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD'))
-
-if option in ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD'):
-    input = st.text_input("Enter gene names separated by commas:", "")
-    selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
-    if st.button("StructurizeMe", type="primary"):
-        st.write("You selected:", option)
-        st.write("Gene names:", selected_gene_names)
-###########################################################################loading data
-def load_data_OVhm450k(nrows):
-    OVdata = pd.read_csv('data/OV Files/HM450k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return OVdata
-
-data = load_data_OVhm450k(22847)
-
-def load_data_OVepic850k(nrows):
-    OVdf = pd.read_csv('data/OV Files/EPIC850k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return OVdf
-
-df = load_data_OVepic850k(23747)
-
-def load_data_OVdiff(nrows):
-    OVdiff = pd.read_csv('data/OV Files/Differences_HM450EPICv1.gz', nrows=nrows, sep='\t', compression='gzip')
-    return OVdiff
-
-OVdiff = load_data_OVdiff(24875)
-
-def load_data_BRCAcan (nrows):
-    brca_cancer = pd.read_csv('data/BRCA Files/BRCA-Cancer.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return brca_cancer
-
-brca_cancer = load_data_BRCAcan(23034)
-
-def load_data_BRCAcnorm (nrows):
-    brca_normal = pd.read_csv('data/BRCA Files/BRCA-Normal.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
-    return brca_normal
-
-brca_normal = load_data_BRCAcnorm(23034)
-###########################################################################choosing gene names and visualization
-indexes = ['Gene','alias_symbol']
-df_cols = OVdf.columns 
-data_cols = OVdata.columns
-diff_cols = OVdiff.columns
-
-gene_names = pd.concat([OVdata['Gene'], OVdf['Gene']], ignore_index=True)
-
-if selected_gene_names:
-    selected_data_hm450k = OVdata[OVdata['Gene'].isin(selected_gene_names) | OVdata['alias_symbol'].isin(selected_gene_names)]
-    selected_data_epic850k = OVdf[OVdf['Gene'].isin(selected_gene_names) | OVdf['alias_symbol'].isin(selected_gene_names)]
-    
-    selected_data_diff = OVdiff[OVdiff['Gene'].isin(selected_gene_names) | OVdiff['alias_symbol'].isin(selected_gene_names)]
-
-    st.write(f'Data for Selected Gene Names: {", ".join(selected_gene_names)}')
-
-    fig2, ax2 = plt.subplots(figsize=(15, 5))
-
-    if not selected_data_epic850k.empty:
-        
-        work_epic850k = selected_data_epic850k.set_index(indexes)
-        work_epic850k_drop = work_epic850k.dropna(axis=1, how='all')
-        ax2 = sns.heatmap(work_epic850k_drop, cmap="vlag", annot=False, linewidths=.5,
-                          yticklabels=work_epic850k_drop.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
-        plt.title("EPIC850K - Ovarian Normal", fontfamily='sans-serif')
+# Function to plot heatmaps
+def plot_heatmap(data, title):
+    fig, ax = plt.subplots(figsize=(15, 5))
+    if not data.empty:
+        sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
+                          yticklabels=data.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size":
+                          12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1))
+        plt.title(title, fontfamily='sans-serif')
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
         plt.tick_params(left=False, bottom=False)
@@ -84,81 +45,50 @@ if selected_gene_names:
         ax2.patch.set_edgecolor('lightgrey')
         ax2.patch.set_hatch('///')
         st.write("Selected Genes in EPIC850k:")
-        st.pyplot(fig2)
-        st.write(selected_data_epic850k.set_index(indexes)[work_epic850k_drop.columns])
+        st.pyplot(fig)
+    else:
+        st.write("No data available for this selection.")
 
-    fig1, ax1 = plt.subplots(figsize=(15, 5))
+# Main app logic
+st.title('StructurizeMe: Cancer and Normal Samples in HM450k and EPICv1')
 
-    if not selected_data_hm450k.empty:
-        
-        work_hm450k = selected_data_hm450k.set_index(indexes)
-        work_hm450k_drop = work_hm450k.dropna(axis=1, how='all')
-        plt.title("HM450K - Ovarian Cancer", fontfamily='sans-serif')
-        ax1 = sns.heatmap(work_hm450k_drop, cmap="vlag", annot=False, linewidths=.5,
-                          yticklabels=work_hm450k_drop.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
-        plt.tick_params(left=False, bottom=False)
-        plt.xlabel("Gene Structure", fontfamily='sans-serif')
-        plt.ylabel("Gene Name", fontfamily='sans-serif')
-        ax1.spines['bottom'].set_visible(True)
-        ax1.spines['right'].set_visible(True)
-        ax1.spines['bottom'].set_linewidth(.5)
-        ax1.spines['right'].set_linewidth(.5)
-        spine_color = 'grey'
-        ax1.spines['bottom'].set_color(spine_color)
-        ax1.spines['right'].set_color(spine_color)
-        ax1.patch.set_edgecolor('lightgrey')
-        ax1.patch.set_hatch('///')
-        
-        st.write("Selected Genes in HM450k:")
-        st.pyplot(fig1)
-        st.write(selected_data_hm450k.set_index(indexes)[work_hm450k_drop.columns])
+# Load all data once at the beginning
+data_dict = load_data()
 
-    fig4, ax4 = plt.subplots(figsize=(20, 10))
+# Select cancer types
+cancer_options = list(data_dict.keys())
+selected_cancers = st.multiselect('Select cancer types:', cancer_options)
 
-    if not selected_data_diff.empty:
-        
-        work_diff = selected_data_diff.set_index(indexes)
-        work_diff_drop = work_diff.dropna(axis=1, how='all')
-        plt.title("Difference", fontfamily='sans-serif')
-        ax3 = sns.heatmap(work_diff_drop, cmap="RdYlBu_r", annot=True, linewidths=.5,
-                      yticklabels=work_diff_drop.index.get_level_values('Gene'), linecolor='grey',    annot_kws={"size": 12}, cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
-        plt.tick_params(left=False, bottom=False)
-        plt.xlabel("Gene Structure", fontfamily='sans-serif')
-        ax3.spines['bottom'].set_visible(True)
-        ax3.spines['right'].set_visible(True)
-        ax3.spines['bottom'].set_linewidth(.5)
-        ax3.spines['right'].set_linewidth(.5)
-        spine_color = 'grey'
-        ax3.spines['bottom'].set_color(spine_color)
-        ax3.spines['right'].set_color(spine_color)
-        ax3.patch.set_edgecolor('lightgrey')
-        ax3.patch.set_hatch('///')
-        
-        st.write("Selected Gene Differences in HM450k and EPIC850k")
-        st.pyplot(fig4)
-        
-    fig3, ax3 = plt.subplots(figsize=(15, 5))
+# Get unique gene names based on selected cancers
+if selected_cancers:
+    all_gene_names = pd.concat([data_dict[cancer]['cancer']['Gene'] for cancer in selected_cancers]).unique()
+    selected_genes = st.multiselect('Select gene names:', all_gene_names)
 
-    if not selected_data_diff.empty:
-        
-        work_diff = selected_data_diff.set_index(indexes)
-        plt.title("Difference", fontfamily='sans-serif')
-        ax3 = sns.heatmap(work_diff, cmap="RdYlBu_r", annot=False, linewidths=.5,
-                      yticklabels=work_diff.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [-0.5, 0.0, 0.5]}, vmin=0, vmax=1)
-        plt.tick_params(left=False, bottom=False)
-        plt.xlabel("Gene Structure", fontfamily='sans-serif')
-        ax3.spines['bottom'].set_visible(True)
-        ax3.spines['right'].set_visible(True)
-        ax3.spines['bottom'].set_linewidth(.5)
-        ax3.spines['right'].set_linewidth(.5)
-        spine_color = 'grey'
-        ax3.spines['bottom'].set_color(spine_color)
-        ax3.spines['right'].set_color(spine_color)
-        ax3.patch.set_edgecolor('lightgrey')
-        ax3.patch.set_hatch('///')
-       
-        st.write(selected_data_diff.set_index(indexes)[work_diff_drop.columns])
-        st.pyplot(fig3)
+    if selected_genes:
+        st.write(f'Selected Cancer Types: {", ".join(selected_cancers)}')
+        st.write(f'Selected Gene Names: {", ".join(selected_genes)}')
 
+        # Plot heatmaps for each selected cancer type
+        for cancer in selected_cancers:
+            # Filter for selected gene names
+            selected_cancer_data = data_dict[cancer]['cancer'][data_dict[cancer]['cancer']['Gene'].isin(selected_genes) |
+                                                                data_dict[cancer]['cancer']['alias_symbol'].isin(selected_genes)]
+            selected_normal_data = data_dict[cancer]['normal'][data_dict[cancer]['normal']['Gene'].isin(selected_genes) |
+                                                                data_dict[cancer]['normal']['alias_symbol'].isin(selected_genes)]
+            selected_diff_data = data_dict[cancer]['diff'][data_dict[cancer]['diff']['Gene'].isin(selected_genes) |
+                                                            data_dict[cancer]['diff']['alias_symbol'].isin(selected_genes)]
+
+            # Set index for each dataset
+            selected_cancer_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+            selected_normal_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+            selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+
+            # Plotting heatmaps for each dataset separately
+            plot_heatmap(selected_cancer_data, f"{cancer} Cancer")
+            plot_heatmap(selected_normal_data, f"{cancer} Normal")
+            plot_heatmap(selected_diff_data, f"{cancer} Difference")
+    else:
+        st.write("Please select gene names.")
 else:
-    st.write("Please enter gene names.")
+    st.write("Please select cancer types.")
+
