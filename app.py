@@ -30,7 +30,7 @@ def plot_heatmap(data, title):
     if not data.empty:
         sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
                           yticklabels=data.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size":
-                          12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1))
+                          12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title(title, fontfamily='sans-serif')
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
