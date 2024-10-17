@@ -68,26 +68,35 @@ if selected_cancers:
         st.write(f'Selected Cancer Types: {", ".join(selected_cancers)}')
         st.write(f'Selected Gene Names: {", ".join(selected_genes)}')
 
-        # Plot heatmaps for each selected cancer type
+        # Iterate through selected cancers and plot heatmaps
         for cancer in selected_cancers:
-            # Filter for selected gene names
+            # Data for Cancer
             selected_cancer_data = data_dict[cancer]['cancer'][data_dict[cancer]['cancer']['Gene'].isin(selected_genes) |
                                                                 data_dict[cancer]['cancer']['alias_symbol'].isin(selected_genes)]
+            selected_cancer_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+
+            # Plotting Cancer Heatmap
+            plot_heatmap(selected_cancer_data, f"{cancer} Cancer")
+
+            # Data for Normal
             selected_normal_data = data_dict[cancer]['normal'][data_dict[cancer]['normal']['Gene'].isin(selected_genes) |
                                                                 data_dict[cancer]['normal']['alias_symbol'].isin(selected_genes)]
+            selected_normal_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+
+            # Plotting Normal Heatmap
+            plot_heatmap(selected_normal_data, f"{cancer} Normal")
+
+            # Data for Differences
             selected_diff_data = data_dict[cancer]['diff'][data_dict[cancer]['diff']['Gene'].isin(selected_genes) |
                                                             data_dict[cancer]['diff']['alias_symbol'].isin(selected_genes)]
-
-            # Set index for each dataset
-            selected_cancer_data.set_index(['Gene', 'alias_symbol'], inplace=True)
-            selected_normal_data.set_index(['Gene', 'alias_symbol'], inplace=True)
             selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
 
-            # Plotting heatmaps for each dataset separately
-            plot_heatmap(selected_cancer_data, f"{cancer} Cancer")
-            plot_heatmap(selected_normal_data, f"{cancer} Normal")
-            plot_heatmap(selected_diff_data, f"{cancer} Difference")
-    else:
-        st.write("Please select gene names.")
+            # Plotting Differences Heatmap
+            plot_heatmap(selected_diff_data, f"{cancer} Differences")
+
+            # Heatmap only with values of the selected gene names
+            values_data = selected_cancer_data[selected_cancer_data.notna().any(axis=1)]
+            plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
 else:
     st.write("Please select cancer types.")
+
