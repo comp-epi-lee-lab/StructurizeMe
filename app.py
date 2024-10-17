@@ -35,15 +35,15 @@ def plot_heatmap(data, title):
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
         plt.tick_params(left=False, bottom=False)
-        ax2.spines['bottom'].set_visible(True)
-        ax2.spines['right'].set_visible(True)
-        ax2.spines['bottom'].set_linewidth(.5)
-        ax2.spines['right'].set_linewidth(.5)
+        ax.spines['bottom'].set_visible(True)
+        ax.spines['right'].set_visible(True)
+        ax.spines['bottom'].set_linewidth(.5)
+        ax.spines['right'].set_linewidth(.5)
         spine_color = 'grey'
-        ax2.spines['bottom'].set_color(spine_color)
-        ax2.spines['right'].set_color(spine_color)
-        ax2.patch.set_edgecolor('lightgrey')
-        ax2.patch.set_hatch('///')
+        ax.spines['bottom'].set_color(spine_color)
+        ax.spines['right'].set_color(spine_color)
+        ax.patch.set_edgecolor('lightgrey')
+        ax.patch.set_hatch('///')
         st.write("Selected Genes in EPIC850k:")
         st.pyplot(fig)
     else:
@@ -91,4 +91,3 @@ if selected_cancers:
         st.write("Please select gene names.")
 else:
     st.write("Please select cancer types.")
-
