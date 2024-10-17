@@ -97,6 +97,7 @@ for cancer in selected_cancers:
     # Heatmap only with values of the selected gene names
     values_data = selected_cancer_data[selected_cancer_data.notna().any(axis=1)]
     plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
+    
 else:
     st.write("Please select cancer types.")
     plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
