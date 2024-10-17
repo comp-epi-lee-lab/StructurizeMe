@@ -99,7 +99,7 @@ for cancer in selected_cancers:
     plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
 else:
     st.write("Please select cancer types.")
-            plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
+    plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
 else:
     st.write("Please select cancer types.")
 
