@@ -6,7 +6,7 @@ import seaborn as sns
 
 st.title('StructurizeMe: Cancer and Normal Samples in HM450k and EPICv1')
 
-input = st.selectbox(
+option = st.selectbox(
     'Select a cancer type:',  # This is the label
     ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD')  # This is the tuple of options)
 
