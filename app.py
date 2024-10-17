@@ -6,10 +6,9 @@ import seaborn as sns
 
 st.title('StructurizeMe: Cancer and Normal Samples in HM450k and EPICv1')
 
-option = st.selectbox(
+input = st.selectbox(
     'Select a cancer type:',  # This is the label
-    ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD')  # This is the tuple of options
-)
+    ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD')  # This is the tuple of options)
 
 input = st.text_input("Enter gene names separated by commas..", "")
 selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
