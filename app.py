@@ -10,7 +10,7 @@ option = st.selectbox(
     'Select a cancer type:',  # This is the label
     ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'KIRC', 'LIHC', 'LUAD')  # This is the tuple of options)
 
-input = st.text_input("Enter gene names separated by commas..", "")
+title = st.text_input("Enter gene names separated by commas..", "")
 selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
 st.button("StructurizeMe", type="primary")
     
