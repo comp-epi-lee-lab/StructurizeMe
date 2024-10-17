@@ -4,13 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title('StructurizeMe HGS-OvCa in HM450k and EPICv1')
+st.title('StructurizeMe: Cancer and Normal Samples in HM450k and EPICv1')
+
+option = st.selectbox(
+     ('BRCA', 'COAD', 'ESCA', 'GBM', 'HNSC', 'HNSC', 'KIRC', 'LIHC', 'LUAD'))
 
 input = st.text_input("Enter gene names separated by commas..", "")
 selected_gene_names = [gene.strip() for gene in input.split(',') if gene.strip()]
 st.button("StructurizeMe", type="primary")
-
-
+    
 def load_data_hm450k(nrows):
     data = pd.read_csv('data/HM450k_EpicGeneSum1.tsv.gz', nrows=nrows, sep='\t', compression='gzip')
     return data
