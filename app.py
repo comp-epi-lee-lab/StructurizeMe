@@ -33,7 +33,8 @@ def plot_heatmap(data, title, yticklabels=None):
                 yticklabels = data.index
 
         sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
-                    yticklabels=yticklabels, linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
+                    yticklabels=yticklabels, linecolor='grey', annot_kws={"size": 12},
+                    cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title(title, fontfamily='sans-serif')
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
@@ -98,16 +99,11 @@ if selected_cancers:
                     selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
                     plot_heatmap(selected_diff_data, f"{cancer} Differences")
 
-                    # Debugging output for column names
-                    st.write(f"Columns in selected_cancer_data: {selected_cancer_data.columns.tolist()}")
-                    st.write(f"Columns in selected_diff_data: {selected_diff_data.columns.tolist()}")
+                    # Get the common columns between selected_cancer_data and selected_diff_data
+                    common_columns = selected_cancer_data.columns.intersection(selected_diff_data.columns)
 
-                    # Create values_data by filtering columns in selected_diff_data
-                    try:
-                        values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
-                    except KeyError as e:
-                        st.write(f"KeyError: {e}. This means some columns in selected_diff_data are not found in selected_cancer_data.")
-                        values_data = pd.DataFrame()  # Create an empty DataFrame if there's an error
+                    # Create values_data by filtering columns in selected_diff_data that exist in selected_cancer_data
+                    values_data = selected_cancer_data.loc[:, common_columns]
 
                     # Check if values_data has non-null values
                     values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
@@ -118,5 +114,3 @@ if selected_cancers:
                         st.write("No data available in values_data for the selected differences.")
                 else:
                     st.write(f"No difference data available for {cancer}.")
-            else:
-                st.write(f"No difference data available for {cancer}.")
