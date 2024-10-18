@@ -31,7 +31,6 @@ def plot_heatmap(data, title):
     fig, ax = plt.subplots(figsize=(15, 5))
     if not data.empty:
         sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
-        sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
                     yticklabels=yticklabels if yticklabels is not None else data.index.get_level_values('Gene'),
                     linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title(title, fontfamily='sans-serif')
