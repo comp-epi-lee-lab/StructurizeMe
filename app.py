@@ -121,9 +121,6 @@ for cancer in selected_cancers:
         else:
             st.write(f"No data available for {cancer} Differences.")
 
-        if not selected_diff_data.empty:
-            selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
-
             # Create values_data by filtering columns in selected_diff_data
             values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
 
