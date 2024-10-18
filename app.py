@@ -31,12 +31,13 @@ def plot_heatmap(data, title):
     fig, ax = plt.subplots(figsize=(15, 5))
 
     if not data.empty:
-        # Check if yticklabels is provided; if not, try to get it from the data index
+        # Use provided yticklabels or fallback to the index
         if yticklabels is None:
-            if hasattr(data.index, 'levels') and len(data.index.levels) > 0:
+            # Try to get gene names from the index
+            if isinstance(data.index, pd.MultiIndex):
                 yticklabels = data.index.get_level_values('Gene')
             else:
-                yticklabels = data.index  # Fallback if no levels are present
+                yticklabels = data.index  # Fallback if not a MultiIndex
                 
     if not data.empty:
         sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
