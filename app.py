@@ -31,8 +31,9 @@ def plot_heatmap(data, title):
     fig, ax = plt.subplots(figsize=(15, 5))
     if not data.empty:
         sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
-                          yticklabels=data.index.get_level_values('Gene'), linecolor='grey', annot_kws={"size":
-                          12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
+        sns.heatmap(data, cmap="vlag", annot=False, linewidths=.5,
+                    yticklabels=yticklabels if yticklabels is not None else data.index.get_level_values('Gene'),
+                    linecolor='grey', annot_kws={"size": 12}, cbar_kws={'ticks': [0.0, 0.5, 1.0]}, vmin=0, vmax=1)
         plt.title(title, fontfamily='sans-serif')
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
@@ -112,6 +113,6 @@ for cancer in selected_cancers:
     # Heatmap only with values of the selected gene names
     values_data = selected_cancer_data[selected_cancer_data.notna().any(axis=1)]
     if not values_data.empty:
-        plot_heatmap(values_data, f"{cancer} Selected Genes with Values", yticklabels=values_data.index.get_level_values('Gene'))
+        plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
     else:
         st.write(f"No values available for selected genes in {cancer}.")
