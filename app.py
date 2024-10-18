@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -39,8 +38,6 @@ def plot_heatmap(data, title, yticklabels=None):
         plt.xlabel("Gene Structure", fontfamily='sans-serif')
         plt.ylabel("Gene Name", fontfamily='sans-serif')
         plt.tick_params(left=False, bottom=False)
-        ax.spines['bottom'].set_visible(True)
-        ax.spines['right'].set_visible(True)
         st.pyplot(fig)
     else:
         st.write("No data available for this selection.")
@@ -92,30 +89,34 @@ if selected_cancers:
 
             # Data for Differences
             if 'diff' in data_dict[cancer]:
-                selected_diff_data = data_dict[cancer]['diff'][data_dict[cancer]['diff']['Gene'].isin(selected_genes) | data_dict[cancer]['diff'].get('alias_symbol', pd.Series([])).isin(selected_genes)]
+                selected_diff_data = data_dict[cancer]['diff'][
+                    data_dict[cancer]['diff']['Gene'].isin(selected_genes) |
+                    data_dict[cancer]['diff'].get('alias_symbol', pd.Series([])).isin(selected_genes)
+                ]
 
-            if not selected_diff_data.empty:
-                selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
-                plot_heatmap(selected_diff_data, f"{cancer} Differences")
+                if not selected_diff_data.empty:
+                    selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+                    plot_heatmap(selected_diff_data, f"{cancer} Differences")
 
-        # Debugging output for column names
-                st.write(f"Columns in selected_cancer_data: {selected_cancer_data.columns.tolist()}")
-                st.write(f"Columns in selected_diff_data: {selected_diff_data.columns.tolist()}")
+                    # Debugging output for column names
+                    st.write(f"Columns in selected_cancer_data: {selected_cancer_data.columns.tolist()}")
+                    st.write(f"Columns in selected_diff_data: {selected_diff_data.columns.tolist()}")
 
-        # Create values_data by filtering columns in selected_diff_data
-        try:
-            values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
-        except KeyError as e:
-            st.write(f"KeyError: {e}. This means some columns in selected_diff_data are not found in selected_cancer_data.")
+                    # Create values_data by filtering columns in selected_diff_data
+                    try:
+                        values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
+                    except KeyError as e:
+                        st.write(f"KeyError: {e}. This means some columns in selected_diff_data are not found in selected_cancer_data.")
+                        values_data = pd.DataFrame()  # Create an empty DataFrame if there's an error
 
-        # Check if values_data has non-null values
-        values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
+                    # Check if values_data has non-null values
+                    values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
 
-        if not values_data.empty:
-            plot_heatmap(values_data, f"{cancer} Selected Genes with Values from Differences")
-        else:
-            st.write("No data available in values_data for the selected differences.")
-    else:
-        st.write(f"No difference data available for {cancer}.")
-else:
-    st.write(f"No difference data available for {cancer}.")
+                    if not values_data.empty:
+                        plot_heatmap(values_data, f"{cancer} Selected Genes with Values from Differences")
+                    else:
+                        st.write("No data available in values_data for the selected differences.")
+                else:
+                    st.write(f"No difference data available for {cancer}.")
+            else:
+                st.write(f"No difference data available for {cancer}.")
