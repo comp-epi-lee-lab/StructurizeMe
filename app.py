@@ -100,4 +100,18 @@ for cancer in selected_cancers:
     
 else:
     st.write("Please select cancer types.")
-    plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
+
+if not selected_cancer_data.empty:
+    plot_heatmap(selected_cancer_data, f"{cancer} Cancer")
+else:
+    st.write(f"No data available for {cancer} Cancer.")
+
+if not selected_normal_data.empty:
+    plot_heatmap(selected_normal_data, f"{cancer} Normal")
+else:
+    st.write(f"No data available for {cancer} Normal.")
+
+if 'diff' in data_dict[cancer] and not selected_diff_data.empty:
+    plot_heatmap(selected_diff_data, f"{cancer} Differences")
+else:
+    st.write(f"No data available for {cancer} Differences.")
