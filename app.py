@@ -112,6 +112,6 @@ for cancer in selected_cancers:
     # Heatmap only with values of the selected gene names
     values_data = selected_cancer_data[selected_cancer_data.notna().any(axis=1)]
     if not values_data.empty:
-        plot_heatmap(values_data, yticklabels=values_data.index.get_level_values('Gene'), f"{cancer} Selected Genes with Values")
+        plot_heatmap(values_data, f"{cancer} Selected Genes with Values", yticklabels=values_data.index.get_level_values('Gene'))
     else:
         st.write(f"No values available for selected genes in {cancer}.")
