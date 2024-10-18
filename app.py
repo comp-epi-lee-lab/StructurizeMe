@@ -121,13 +121,21 @@ for cancer in selected_cancers:
         else:
             st.write(f"No data available for {cancer} Differences.")
 
-    # Heatmap only with values of the selected gene names
-    values_data = selected_cancer_data[selected_cancer_data.notna().any(axis=1)]
-    st.write("Filtered values_data:", values_data)  # Debugging output
+        if not selected_diff_data.empty:
+            selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
 
-# Check if the required columns exist before setting the index
-    if 'Gene' in values_data.columns and 'alias_symbol' in values_data.columns:
-        values_data.set_index(['Gene', 'alias_symbol'], inplace=True)
-        plot_heatmap(values_data, f"{cancer} Selected Genes with Values")
+            # Create values_data by filtering columns in selected_diff_data
+            values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
+
+            # Check if values_data has non-null values
+            values_data = values_data[values_data.notna().any(axis=1)]
+
+            # Plotting values_data heatmap
+            if not values_data.empty:
+                plot_heatmap(values_data, f"{cancer} Selected Genes with Values from Differences")
+            else:
+                st.write("No data available in values_data for the selected differences.")
+        else:
+            st.write(f"No difference data available for {cancer}.")
     else:
-        st.write("Columns 'Gene' or 'alias_symbol' not found in values_data.")
+        st.write(f"No data available for {cancer} Cancer.")
