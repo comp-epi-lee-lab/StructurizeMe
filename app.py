@@ -104,6 +104,7 @@ if selected_cancers:
 
                     # Create values_data by filtering columns in selected_diff_data that exist in selected_cancer_data
                     values_data = selected_cancer_data.loc[:, common_columns]
+                    values_data = values_data.dropna(axis=1, how='all')
 
                     # Check if values_data has non-null values
                     values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
