@@ -92,27 +92,30 @@ if selected_cancers:
 
             # Data for Differences
             if 'diff' in data_dict[cancer]:
-                selected_diff_data = data_dict[cancer]['diff'][
-                    data_dict[cancer]['diff']['Gene'].isin(selected_genes) |
-                    data_dict[cancer]['diff'].get('alias_symbol', pd.Series([])).isin(selected_genes)
-                ]
+                selected_diff_data = data_dict[cancer]['diff'][data_dict[cancer]['diff']['Gene'].isin(selected_genes) | data_dict[cancer]['diff'].get('alias_symbol', pd.Series([])).isin(selected_genes)]
 
-                if not selected_diff_data.empty:
-                    selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
-                    plot_heatmap(selected_diff_data, f"{cancer} Differences")
+            if not selected_diff_data.empty:
+                selected_diff_data.set_index(['Gene', 'alias_symbol'], inplace=True)
+                plot_heatmap(selected_diff_data, f"{cancer} Differences")
 
-                    # Create values_data from selected_diff_data
-                    values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
-                    values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
+        # Debugging output for column names
+                st.write(f"Columns in selected_cancer_data: {selected_cancer_data.columns.tolist()}")
+                st.write(f"Columns in selected_diff_data: {selected_diff_data.columns.tolist()}")
 
-                    if not values_data.empty:
-                        plot_heatmap(values_data, f"{cancer} Selected Genes with Values from Differences")
-                    else:
-                        st.write("No data available in values_data for the selected differences.")
-                else:
-                    st.write(f"No difference data available for {cancer}.")
-            else:
-                st.write(f"No difference data available for {cancer}.")
+        # Create values_data by filtering columns in selected_diff_data
+        try:
+            values_data = selected_cancer_data.loc[:, selected_diff_data.columns]
+        except KeyError as e:
+            st.write(f"KeyError: {e}. This means some columns in selected_diff_data are not found in selected_cancer_data.")
+
+        # Check if values_data has non-null values
+        values_data = values_data[values_data.notna().any(axis=1)]  # Keep only rows with non-null values
+
+        if not values_data.empty:
+            plot_heatmap(values_data, f"{cancer} Selected Genes with Values from Differences")
+        else:
+            st.write("No data available in values_data for the selected differences.")
+    else:
+        st.write(f"No difference data available for {cancer}.")
 else:
-    st.write("Please select cancer types.")
-
+    st.write(f"No difference data available for {cancer}.")
