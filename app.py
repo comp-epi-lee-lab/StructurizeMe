@@ -24,6 +24,8 @@ def load_data():
         }
     }
 
+data = load_data()
+
 # Function to plot heatmaps
 def plot_heatmap(data, title):
     fig, ax = plt.subplots(figsize=(15, 5))
