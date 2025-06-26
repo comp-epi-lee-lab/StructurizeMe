@@ -20,7 +20,7 @@ def load_data():
         'OV': {
             'cancer': pd.read_csv('data/OV Files/HM450k_EpicGeneSum1.tsv.gz', sep='\t', compression='gzip'),
             'normal': pd.read_csv('data/OV Files/EPIC850k_EpicGeneSum1.tsv.gz', sep='\t', compression='gzip'),
-            'diff': pd.read_csv('data/Differences_HM450EPICv1.gz', sep='\t', compression='gzip')
+            'diff': pd.read_csv('data/OV Files/Differences_HM450EPICv1.gz', sep='\t', compression='gzip')
         }
     }
     
